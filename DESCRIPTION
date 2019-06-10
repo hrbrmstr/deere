@@ -1,6 +1,6 @@
 Package: deere
 Type: Package
-Title: deere title goes here otherwise CRAN checks fail
+Title: Catchall Functions for All Things 'John Deere'
 Version: 0.1.0
 Date: 2019-06-10
 Authors@R: c(
@@ -8,18 +8,20 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-5670-2640"))
   )
 Maintainer: Bob Rudis <bob@rud.is>
-Description: A good description goes here otherwise CRAN checks fail.
+Description: Initially a convenience package to access 'John Deere' 'MowerPlus' databases
+    from 'iOS' backups but perpaps will be something more all-encompassing.
 URL: https://gitlab.com/hrbrmstr/deere
 BugReports: https://gitlab.com/hrbrmstr/deere/issues
 Encoding: UTF-8
-License: AGPL
+License: MIT + file LICENSE
 Suggests:
     testthat,
     covr
 Depends:
     R (>= 3.2.0)
 Imports:
-    httr,
-    jsonlite
+    tibble,
+    dplyr,
+    RSQLite
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1

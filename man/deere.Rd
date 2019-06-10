@@ -4,13 +4,29 @@
 \name{deere}
 \alias{deere}
 \alias{deere-package}
-\title{...}
+\title{Catchall Functions for All Things 'John Deere'}
 \description{
+Initially a convenience package to access 'John Deere' 'MowerPlus' databases from
+'iOS' backups but perpaps will be something more all-encompassing.
+}
+\details{
+Ref:
 \itemize{
+\item \url{https://rud.is/b/2019/06/02/trawling-through-ios-backups-for-treasure-a-k-a-how-to-fish-for-target-files-in-ios-backups-with-r/}
+\item \url{https://rud.is/b/2019/06/09/wrapping-up-exploration-of-john-deeres-mowerplus-database/}
 \item URL: \url{https://gitlab.com/hrbrmstr/deere}
 \item BugReports: \url{https://gitlab.com/hrbrmstr/deere/issues}
 }
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://gitlab.com/hrbrmstr/deere}
+  \item Report bugs at \url{https://gitlab.com/hrbrmstr/deere/issues}
+}
+
+}
 \author{
 Bob Rudis (bob@rud.is)
 }
+\keyword{internal}
