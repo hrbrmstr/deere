@@ -3,8 +3,10 @@
 #' @md
 #' @note You may need to [setup permissions](https://rud.is/b/2019/06/02/trawling-through-ios-backups-for-treasure-a-k-a-how-to-fish-for-target-files-in-ios-backups-with-r/)
 #'       to be able to use this method depending on which macOS version you're on.
-#' @param backup_id the giant hex string of a folder name
+#' @param backup_id the giant hex string of a folder name; if unspecified will use the most
+#'        recent backup (if found).
 #' @param data_loc where `mowtrack.sqlite` will be sync'd
+#' @param ios_backup_dir where to look for iOS backups (tries to auto-derive the value)
 #' @param overwrite nuke ^^ if present (def: `TRUE`)
 #' @export
 #' @examples \dontrun{
@@ -17,22 +19,28 @@
 #' glimpse(tbl(mow_db, "ZACTIVITY"))
 #'
 #' }
-src_mowerplus <- function(backup_id, data_loc = "~/Data", overwrite = TRUE) {
+src_mowerplus <- function(backup_id, data_loc = "~/Data",
+                          ios_backup_dir = platform_ios_backup_dir(),
+                          overwrite = TRUE) {
+
+  if (missing(backup_id)) {
+    backup_id <- list_ios_backups(dir = ios_backup_dir)[["path"]][[1]]
+  }
 
   # root of mobile backup dir for `backup_id`
-  mb <- path.expand(file.path("~/Library/Application Support/MobileSync/Backup", backup_id))
-  stopifnot(dir.exists(mb))
+  mb <- fs::path_real(fs::path_join(c(ios_backup_dir, backup_id)))
+  stopifnot(fs::dir_exists(mb))
 
-  data_loc <- path.expand(data_loc)
-  stopifnot(dir.exists(data_loc))
+  data_loc <- fs::path_real(data_loc)
+  stopifnot(fs::dir_exists(data_loc))
 
   tf <- tempfile(fileext = ".sqlite")
   on.exit(unlink(tf), add=TRUE)
 
   # path to the extracted sqlite file
-  out_db <- file.path(data_loc, "mowtrack.sqlite")
+  out_db <- fs::path_join(c(data_loc, "mowtrack.sqlite"))
 
-  file.copy(file.path(mb, "Manifest.db"), tf, overwrite = TRUE)
+  fs::file_copy(fs::path_join(c(mb, "Manifest.db")), tf, overwrite = TRUE)
 
   manifest_db <- src_sqlite(tf)
 
@@ -41,9 +49,9 @@ src_mowerplus <- function(backup_id, data_loc = "~/Data", overwrite = TRUE) {
   filter(fils, relativePath == "Library/Application Support/MowTracking.sqlite") %>%
     pull(fileID) -> mowtrackdb_loc
 
-  file.copy(
-    file.path(mb, sprintf("%s/%s", substr(mowtrackdb_loc, 1, 2), mowtrackdb_loc)),
-    file.path(data_loc, "mowtrack.sqlite"),
+  fs::file_copy(
+    fs::path_join(c(mb, sprintf("%s/%s", substr(mowtrackdb_loc, 1, 2), mowtrackdb_loc))),
+    fs::path_join(c(data_loc, "mowtrack.sqlite")),
     overwrite = overwrite
   )
 

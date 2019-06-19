@@ -17,5 +17,6 @@
 #' @keywords internal
 #' @author Bob Rudis (bob@@rud.is)
 #' @import tibble
-#' @importFrom dplyr tbl src_sqlite
+#' @importFrom fs dir_info file_copy path_real path_join dir_info dir_exists
+#' @importFrom dplyr tbl src_sqlite desc arrange filter mutate select pull
 "_PACKAGE"

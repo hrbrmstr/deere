@@ -24,6 +24,13 @@ Ref:
 
 The following functions are implemented:
 
+  - `from_coredata_ts`: Convert timestampes from Apple “CoreData” format
+    to something usable
+  - `list_ios_backups`: List iOS backups available on this system
+  - `platform_ios_backup_dir`: List iOS backups available on this system
+  - `src_mowerplus`: Find and sync a copy of the latest MowerPlus
+    database file from an iOS backup
+
 ## Installation
 
 ``` r
@@ -47,13 +54,20 @@ library(tidyverse)
 
 # current version
 packageVersion("deere")
-## [1] '0.1.0'
+## [1] '0.2.0'
 ```
 
-### Sample from a recent mow
+### Sample from the latest mow
 
 ``` r
-mow_db <- src_mowerplus("28500cd31b9580aaf5815c695ebd3ea5f7455628")
+list_ios_backups()
+## # A tibble: 2 x 3
+##   path                                              modification_time          size
+##   <chr>                                             <dttm>              <fs::bytes>
+## 1 28500cd31b9580aaf5815c695ebd3ea5f7455628          2019-06-19 14:31:41       8.19K
+## 2 28500cd31b9580aaf5815c695ebd3ea5f7455628-20190601 2019-06-01 17:23:05       8.22K
+
+mow_db <- src_mowerplus()
 
 mow_db
 ## src:  sqlite 3.22.0 [/Users/hrbrmstr/Data/mowtrack.sqlite]
@@ -66,14 +80,14 @@ glimpse(tbl(mow_db, "ZMOWER"))
 ## Database: sqlite 3.22.0 [/Users/hrbrmstr/Data/mowtrack.sqlite]
 ## $ Z_PK                      <int> 1
 ## $ Z_ENT                     <int> 7
-## $ Z_OPT                     <int> 11
+## $ Z_OPT                     <int> 15
 ## $ ZDECKSIZEINCHES           <int> 48
 ## $ ZDISMISSEDFULLSERVICETASK <int> 0
 ## $ ZDISMISSEDPERIODICTASK    <int> 0
 ## $ ZSMARTCONNECTOR           <int> NA
 ## $ ZUSER                     <int> 1
 ## $ ZBATTERYCHARGE            <dbl> NA
-## $ ZENGINEHOURS              <dbl> 3.474705
+## $ ZENGINEHOURS              <dbl> 4.854714
 ## $ ZFULLSERVICEPERFORMED     <dbl> NA
 ## $ ZHMCLASTSEEN              <dbl> NA
 ## $ ZHMCOFFSET                <dbl> 0
@@ -92,26 +106,26 @@ glimpse(tbl(mow_db, "ZACTIVITY"))
 ## Observations: ??
 ## Variables: 20
 ## Database: sqlite 3.22.0 [/Users/hrbrmstr/Data/mowtrack.sqlite]
-## $ Z_PK           <int> 1, 2
-## $ Z_ENT          <int> 3, 3
-## $ Z_OPT          <int> 124, 93
-## $ ZMONTH         <int> 6, 6
-## $ ZYEAR          <int> 2019, 2019
-## $ ZMOWER         <int> 1, 1
-## $ ZUSER          <int> 1, 1
-## $ ZISCOMPLETE    <int> 1, 1
-## $ ZISMISSEDMOW   <int> 0, 0
-## $ ZLASTLOCATION  <int> 7016, 12548
-## $ ZCREATEDAT     <dbl> 581100260, 581778616
-## $ ZENGINEHOURS   <dbl> NA, NA
-## $ ZAREACOVERED   <dbl> 3.761875, 2.286811
-## $ ZAVERAGESPEED  <dbl> 3.727754, 2.894269
-## $ ZDISTANCEMOWED <dbl> 7.758894, 4.716564
-## $ ZMOWINGTIME    <dbl> 6960.000, 5548.939
-## $ ZNOTES         <chr> "First mow!", NA
-## $ ZINTERVALNAME  <chr> NA, NA
-## $ ZTYPE          <chr> NA, NA
-## $ ZUUID          <blob> blob[238 B], blob[238 B]
+## $ Z_PK           <int> 1, 2, 3, 4
+## $ Z_ENT          <int> 3, 3, 3, 3
+## $ Z_OPT          <int> 124, 93, 52, 36
+## $ ZMONTH         <int> 6, 6, 6, 6
+## $ ZYEAR          <int> 2019, 2019, 2019, 2019
+## $ ZMOWER         <int> 1, 1, 1, 1
+## $ ZUSER          <int> 1, 1, 1, 1
+## $ ZISCOMPLETE    <int> 1, 1, 1, 1
+## $ ZISMISSEDMOW   <int> 0, 0, 0, 0
+## $ ZLASTLOCATION  <int> 7016, 12548, 15500, 17514
+## $ ZCREATEDAT     <dbl> 581100260, 581778616, 582506930, 582659215
+## $ ZENGINEHOURS   <dbl> NA, NA, NA, NA
+## $ ZAREACOVERED   <dbl> 3.761875, 2.286811, 1.292296, 1.078715
+## $ ZAVERAGESPEED  <dbl> 3.727754, 2.894269, 3.011241, 3.650042
+## $ ZDISTANCEMOWED <dbl> 7.758894, 4.716564, 2.665370, 2.224857
+## $ ZMOWINGTIME    <dbl> 6960.000, 5548.939, 2933.049, 2034.981
+## $ ZNOTES         <chr> "First mow!", NA, NA, NA
+## $ ZINTERVALNAME  <chr> NA, NA, NA, NA
+## $ ZTYPE          <chr> NA, NA, NA, NA
+## $ ZUUID          <blob> blob[238 B], blob[238 B], blob[238 B], blob[238 B]
 
 tbl(mow_db, "ZACTIVITY")%>%
   collect() -> activity
@@ -195,8 +209,8 @@ arrange(sessions, ts) %>%
 
 | Lang | \# Files |  (%) | LoC |  (%) | Blank lines |  (%) | \# Lines |  (%) |
 | :--- | -------: | ---: | --: | ---: | ----------: | ---: | -------: | ---: |
-| Rmd  |        1 | 0.17 |  74 | 0.69 |          31 | 0.69 |       39 | 0.45 |
-| R    |        5 | 0.83 |  33 | 0.31 |          14 | 0.31 |       48 | 0.55 |
+| Rmd  |        1 | 0.12 |  75 | 0.53 |          33 | 0.56 |       43 | 0.38 |
+| R    |        7 | 0.88 |  67 | 0.47 |          26 | 0.44 |       69 | 0.62 |
 
 ## Code of Conduct
 

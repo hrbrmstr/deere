@@ -12,3 +12,19 @@ from_coredata_ts <- function(x, tz = NULL) {
   ), tz = tz)
 }
 
+
+os_type <- function() {
+  .Platform$OS.type
+}
+
+detect_os <- function() {
+  ostype <- os_type()
+  sysname <- Sys.info()["sysname"]
+  if (ostype == "windows") {
+    "windows"
+  } else if (sysname == "Darwin") {
+    "macos"
+  } else {
+    stop("You will need to manually specify the backup location on this platform.", call.=FALSE)
+  }
+}

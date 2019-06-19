@@ -1,8 +1,8 @@
 Package: deere
 Type: Package
 Title: Catchall Functions for All Things 'John Deere'
-Version: 0.1.0
-Date: 2019-06-10
+Version: 0.2.0
+Date: 2019-06-19
 Authors@R: c(
     person("Bob", "Rudis", email = "bob@rud.is", role = c("aut", "cre"), 
            comment = c(ORCID = "0000-0001-5670-2640"))
@@ -20,8 +20,10 @@ Suggests:
 Depends:
     R (>= 3.2.0)
 Imports:
+    fs,
     tibble,
     dplyr,
-    RSQLite
+    RSQLite,
+    magrittr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1

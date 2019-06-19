@@ -29,6 +29,11 @@ Ref:
 
 The following functions are implemented:
 
+- `from_coredata_ts`:	Convert timestampes from Apple "CoreData" format to something usable
+- `list_ios_backups`:	List iOS backups available on this system
+- `platform_ios_backup_dir`:	List iOS backups available on this system
+- `src_mowerplus`:	Find and sync a copy of the latest MowerPlus database file from an iOS backup
+
 ## Installation
 
 ```{r install-ex, eval=FALSE}
@@ -55,10 +60,12 @@ packageVersion("deere")
 
 ```
 
-### Sample from a recent mow
+### Sample from the latest mow
 
 ```{r mow, cache=TRUE}
-mow_db <- src_mowerplus("28500cd31b9580aaf5815c695ebd3ea5f7455628")
+list_ios_backups()
+
+mow_db <- src_mowerplus()
 
 mow_db
 

@@ -4,12 +4,16 @@
 \alias{src_mowerplus}
 \title{Find and sync a copy of the latest MowerPlus database file from an iOS backup}
 \usage{
-src_mowerplus(backup_id, data_loc = "~/Data", overwrite = TRUE)
+src_mowerplus(backup_id, data_loc = "~/Data",
+  ios_backup_dir = platform_ios_backup_dir(), overwrite = TRUE)
 }
 \arguments{
-\item{backup_id}{the giant hex string of a folder name}
+\item{backup_id}{the giant hex string of a folder name; if unspecified will use the most
+recent backup (if found).}
 
 \item{data_loc}{where \code{mowtrack.sqlite} will be sync'd}
+
+\item{ios_backup_dir}{where to look for iOS backups (tries to auto-derive the value)}
 
 \item{overwrite}{nuke ^^ if present (def: \code{TRUE})}
 }
